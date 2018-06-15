@@ -28,10 +28,10 @@ public class CreditCardUserService implements UserDetailsService {
         CreditCardUser creditCardUser = creditCardUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
-        return toUser(creditCardUser);
+        return toUserDetails(creditCardUser);
     }
 
-    private UserDetails toUser(CreditCardUser creditCardUser) {
+    private UserDetails toUserDetails(CreditCardUser creditCardUser) {
         return User.builder()
                 .username(creditCardUser.getUsername())
                 .password(creditCardUser.getPassword())
