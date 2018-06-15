@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface CreditCardUserRepository extends JpaRepository<CreditCardUser, Long> {
 
     Optional<CreditCardUser> findByUsername(String username);
+    Optional<CreditCardUser> findByEmail(String email);
 
 }

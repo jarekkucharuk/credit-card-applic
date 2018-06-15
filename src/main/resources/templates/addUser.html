@@ -7,6 +7,10 @@
 </head>
 <body>
 <h1>Add user</h1>
+<div th:if="${errorMessage}" th:utext="${errorMessage}"
+     style="color:red;font-style:italic;">
+    ...
+</div>
 <form th:action="@{/mvc/creditCardUsers/addUser}"
       th:object="${creditCardUserForm}" method="POST">
     Username:

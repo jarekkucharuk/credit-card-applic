@@ -1,5 +1,6 @@
 package pl.dominisz.creditcardapplication.service;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +11,7 @@ import pl.dominisz.creditcardapplication.model.CreditCardUserForm;
 import pl.dominisz.creditcardapplication.repository.CreditCardUserRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * http://dominisz.pl
@@ -19,6 +21,8 @@ import java.util.Collections;
 public class CreditCardUserServiceImpl implements CreditCardUserService, UserDetailsService {
 
     private final CreditCardUserRepository creditCardUserRepository;
+
+    private final EmailValidator emailValidator = EmailValidator.getInstance();
 
     public CreditCardUserServiceImpl(CreditCardUserRepository creditCardUserRepository) {
         this.creditCardUserRepository = creditCardUserRepository;
@@ -43,8 +47,48 @@ public class CreditCardUserServiceImpl implements CreditCardUserService, UserDet
                 .build();
     }
 
-    public void createUser(CreditCardUserForm creditCardUserForm) {
+    public Optional<String> createUser(CreditCardUserForm creditCardUserForm) {
+        //TODO do poprawy ;-)
+        Optional<String> errors = validateFormData(creditCardUserForm);
+
+        if (errors.isPresent()) {
+            return errors;
+        }
+
         creditCardUserRepository.save(toCreditCardUser(creditCardUserForm));
+
+        return Optional.empty();
+    }
+
+    private Optional<String> validateFormData(CreditCardUserForm creditCardUserForm) {
+        if (!validUsername(creditCardUserForm.getUsername())) {
+            return Optional.of("Invalid username");
+        }
+
+        if (!validEmail(creditCardUserForm.getEmail())) {
+            return Optional.of("Invalid email");
+        }
+
+        if (!validPassword(creditCardUserForm.getPassword())) {
+            return Optional.of("Invalid password");
+        }
+
+        return Optional.empty();
+    }
+
+    private boolean validPassword(String password) {
+        return true;
+    }
+
+    private boolean validEmail(String email) {
+        return emailValidator.isValid(email)
+                && !creditCardUserRepository.findByEmail(email).isPresent();
+    }
+
+    private boolean validUsername(String username) {
+        username = username.trim();
+        return !username.equals("")
+                && !creditCardUserRepository.findByUsername(username).isPresent();
     }
 
     private CreditCardUser toCreditCardUser(CreditCardUserForm creditCardUserForm) {

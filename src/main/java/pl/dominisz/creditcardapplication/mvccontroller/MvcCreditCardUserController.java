@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.dominisz.creditcardapplication.model.CreditCardUserForm;
 import pl.dominisz.creditcardapplication.service.CreditCardUserService;
 
+import java.util.Optional;
+
 /**
  * http://dominisz.pl
  * 15.06.2018
@@ -30,9 +32,15 @@ public class MvcCreditCardUserController {
     }
 
     @PostMapping("/addUser")
-    public String addNewUser(@ModelAttribute CreditCardUserForm creditCardUserForm) {
-        creditCardUserService.createUser(creditCardUserForm);
+    public String addNewUser(@ModelAttribute CreditCardUserForm creditCardUserForm,
+                             Model model) {
+        Optional<String> errorMessage = creditCardUserService.createUser(creditCardUserForm);
 
-        return "/login";
+        if (errorMessage.isPresent()) {
+            model.addAttribute("errorMessage", errorMessage.get());
+            return "addUser";
+        }
+
+        return "login";
     }
 }
