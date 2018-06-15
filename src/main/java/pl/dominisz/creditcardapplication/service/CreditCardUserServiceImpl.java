@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.dominisz.creditcardapplication.model.CreditCardUser;
 import pl.dominisz.creditcardapplication.model.CreditCardUserForm;
@@ -21,11 +22,13 @@ import java.util.Optional;
 public class CreditCardUserServiceImpl implements CreditCardUserService, UserDetailsService {
 
     private final CreditCardUserRepository creditCardUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final EmailValidator emailValidator = EmailValidator.getInstance();
 
-    public CreditCardUserServiceImpl(CreditCardUserRepository creditCardUserRepository) {
+    public CreditCardUserServiceImpl(CreditCardUserRepository creditCardUserRepository, PasswordEncoder passwordEncoder) {
         this.creditCardUserRepository = creditCardUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -95,7 +98,7 @@ public class CreditCardUserServiceImpl implements CreditCardUserService, UserDet
         CreditCardUser creditCardUser = new CreditCardUser();
 
         creditCardUser.setUsername(creditCardUserForm.getUsername());
-        creditCardUser.setPassword(creditCardUserForm.getPassword());
+        creditCardUser.setPassword(passwordEncoder.encode(creditCardUserForm.getPassword()));
         creditCardUser.setEmail(creditCardUserForm.getEmail());
 
         return creditCardUser;
