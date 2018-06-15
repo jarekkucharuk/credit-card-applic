@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.dominisz.creditcardapplication.model.CreditCardUser;
+import pl.dominisz.creditcardapplication.model.CreditCardUserForm;
 import pl.dominisz.creditcardapplication.repository.CreditCardUserRepository;
 
 import java.util.Collections;
@@ -40,6 +41,20 @@ public class CreditCardUserService implements UserDetailsService {
                 .accountLocked(false)
                 .credentialsExpired(false)
                 .build();
+    }
+
+    public void createUser(CreditCardUserForm creditCardUserForm) {
+        creditCardUserRepository.save(toCreditCardUser(creditCardUserForm));
+    }
+
+    private CreditCardUser toCreditCardUser(CreditCardUserForm creditCardUserForm) {
+        CreditCardUser creditCardUser = new CreditCardUser();
+
+        creditCardUser.setUsername(creditCardUserForm.getUsername());
+        creditCardUser.setPassword(creditCardUserForm.getPassword());
+        creditCardUser.setEmail(creditCardUserForm.getEmail());
+
+        return creditCardUser;
     }
 
 }

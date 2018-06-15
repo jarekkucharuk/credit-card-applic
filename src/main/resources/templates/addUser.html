@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Add user</h1>
-<form th:action="@{/mvc/adduser}"
+<form th:action="@{/mvc/creditCardUsers/addUser}"
       th:object="${creditCardUserForm}" method="POST">
     Username:
     <input type="text" th:field="*{username}" />
